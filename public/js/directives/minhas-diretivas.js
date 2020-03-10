@@ -40,4 +40,15 @@ angular
       '<button class="btn btn-danger btn-block" ng-click="acao()">{{nome}}</button>';
 
     return ddo;
+  })
+  .directive("meuFocus", function() {
+    var ddo = {};
+    ddo.restrict = "A";
+    ddo.link = function(scope, element) {
+      scope.$on("fotoCadastrada", function() {
+        element[0].focus();
+      });
+    };
+
+    return ddo;
   });
