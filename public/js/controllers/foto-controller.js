@@ -1,6 +1,11 @@
 angular
   .module("alurapic")
-  .controller("FotoController", function($scope, recursoFoto, $routeParams) {
+  .controller("FotoController", function(
+    $scope,
+    recursoFoto,
+    $routeParams,
+    cadastroDeFotos
+  ) {
     $scope.foto = {};
     $scope.mensagem = "";
 
@@ -19,33 +24,15 @@ angular
 
     $scope.submeter = function() {
       if ($scope.formulario.$valid) {
-        if ($routeParams.fotoId) {
-          recursoFoto.update(
-            { fotoId: $scope.foto._id },
-            $scope.foto,
-            function() {
-              $scope.mensagem =
-                "Foto" + $scope.foto.titulo + " foi alterada com sucesso";
-            },
-            function(err) {
-              console.log(err);
-              $scope.mensagem =
-                "Não foi possível alterar a foto " + $scope.foto.titulo;
-            }
-          );
-        } else {
-          recursoFoto.save(
-            $scope.foto,
-            function() {
-              $scope.foto = {};
-              $scope.mensagem = "Foto cadastrada com sucesso";
-            },
-            function(err) {
-              $scope.mensagem = "Não foi possível incluir a foto";
-              console.error(err);
-            }
-          );
-        }
+        cadastroDeFotos
+          .cadastrar($scope.foto)
+          .then(function(dados) {
+            $scope.mensagem = dados.mensagem;
+            if (dados.inclusao) $scope.foto = {};
+          })
+          .catch(function(err) {
+            $scope.mensagem = err.mensagem;
+          });
       }
     };
   });
